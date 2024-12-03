@@ -84,7 +84,7 @@ const [validInput, setValidInput] = useState(true)
             <Text className="text-2xl flex-grow">{player.name}</Text>
             <TextInput
               keyboardType="numeric"
-              className="w-24 border border-slate-400/70 rounded-xl text-center text-lg"
+              className="w-24 border border-slate-400/70 rounded-xl text-center text-lg py-1 flex flex-row items-center"
               value={player.newScore}
                 onChangeText={(newScore) => updateScore(player.id, newScore)}
                 onFocus= {() => (player.newScore == '0' && updateScore(player.id, ''))}

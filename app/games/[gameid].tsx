@@ -35,8 +35,8 @@ const GamePage = () => {
     <>
     <ScrollView className="bg-[#f0f0f0]" contentContainerStyle={styles.container}>
       <View style={styles.scoreCard}>
-        <Text style={styles.title}>Game Scores</Text>
-        <Text style={styles.subtitle}>Game 2</Text>
+        <Text style={styles.title}></Text>
+        <Text style={styles.subtitle}></Text>
 
         <View style={styles.tableContainer}>
           <View style={[styles.tableRowHeader, styles.tableRowWithBorders]}>
