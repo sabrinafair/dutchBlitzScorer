@@ -4,7 +4,24 @@ module.exports = {
   content: ["./App.{js,jsx,ts,tsx}", "./app/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+  keyframes: {
+    'fadeIn': {
+      '0%': { opacity: 0 },
+      '20%': { opacity: 1 },
+      '80%': { opacity: 1 },
+      '100%': { opacity: 0 },
+    },
+    'popUp': {
+      '0%': {transform: 'scale(0)'},
+      '100%': { transform: 'scale(1)' },     
+    }
   },
+  animation: {
+    'fade': 'fadeIn 3s ease-in-out',
+    'snack': 'popUp 1s ease-in-out infinite'
+  },
+},
+},
   plugins: [],
 }

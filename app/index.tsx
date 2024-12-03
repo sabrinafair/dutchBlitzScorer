@@ -16,20 +16,6 @@ const HomePage = () => {
   ];
   return (
     <View className="flex flex-col h-full">
-      {/* <Text className="bg-blue-200 text-lg font-bold">Home Page</Text>
-      <Text>Page change options:</Text>
-      <Link href={"/games/1"}>Go to Game Page 1</Link>
-      <Pressable
-        onPress={() =>
-          router.push({
-            pathname: "/games/[gameid]",
-            params: { gameid: 2 },
-          })
-        }
-      >
-        <Text>Go to game page 2</Text>
-      </Pressable> */}
-      {/* <Text>List below</Text> */}
       {games.map((game) => {
         return (
           <Pressable key={game.id}
@@ -47,7 +33,7 @@ const HomePage = () => {
         );
       })}
 
-      <View className="absolute right-10 bottom-10 w-40">
+      <View className="absolute right-10 bottom-28 w-40">
         <Button
           title="New Game"
           onPress={() =>
