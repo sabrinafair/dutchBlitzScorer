@@ -9,7 +9,7 @@ module.exports = {
     'fadeIn': {
       '0%': { opacity: 0 },
       '20%': { opacity: 1 },
-      '80%': { opacity: 1 },
+      '70%': { opacity: 1 },
       '100%': { opacity: 0 },
     },
     'popUp': {
@@ -18,7 +18,7 @@ module.exports = {
     }
   },
   animation: {
-    'fade': 'fadeIn 3s ease-in-out',
+    'fade': 'fadeIn 2s ease-in-out',
     'snack': 'popUp 1s ease-in-out infinite'
   },
 },

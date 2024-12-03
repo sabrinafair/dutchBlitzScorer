@@ -33,7 +33,9 @@ const _layout = () => {
         <Stack.Screen name="games/insertRound/[roundid]" options={{
             headerTitle: "Record Round"
         }}/>
-
+        <Stack.Screen name="games/editRound/[roundid]" options={{
+            headerTitle: "Edit Round"
+        }}/>
     </Stack>
     </Provider>
   )

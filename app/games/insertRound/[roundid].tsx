@@ -23,20 +23,38 @@ const [validInput, setValidInput] = useState(true)
 //     { id: 4, name: "Crab", score: 6, newScore: 6 },
 //   ];
   const [players, setPlayers] = useState<PlayerProp[]>([
-    { id: 1, name: "Goose", score: 0, newScore: (0).toString(), validInput: true },
-    { id: 2, name: "Cat", score: 0, newScore: (0).toString(), validInput: true },
-    { id: 3, name: "Bear", score: 0, newScore: (0).toString(), validInput: true },
-    { id: 4, name: "Crab", score: 0, newScore: (0).toString(), validInput: true },
+    { id: 1, name: "Player 1", score: 0, newScore: (0).toString(), validInput: true },
+    { id: 2, name: "Player 2", score: 0, newScore: (0).toString(), validInput: true },
+    { id: 3, name: "Player 3", score: 0, newScore: (0).toString(), validInput: true },
+    { id: 4, name: "Player 4", score: 0, newScore: (0).toString(), validInput: true },
   ]);
 
-  function addRound(snkbar: string): void {
-    console.log("add round function");
-    dispatch(setSnackbar('Success'))
-    //TODO: maybe add check here for validating scores are in correct range
-    router.push({
-      pathname: "/games/[gameid]",
-      params: { gameid: roundid, snackbar: snkbar },
-    });
+  function addRound(snkbar?: string): void {
+    if(validInput){
+    console.log("add round function HEREEEEEEEEEEEEEEEEEEEEE");
+      dispatch(setSnackbar('Success'))
+      //TODO: maybe add check here for validating scores are in correct range
+      router.push({
+        pathname: "/games/[gameid]",
+        params: { gameid: roundid, snackbar: snkbar },
+      });
+    }else{
+      console.log("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+      dispatch(setSnackbar('Fail'))
+      router.push({
+        pathname: "/games/[gameid]",
+        params: { gameid: roundid, snackbar: 'Fail' },
+      });
+    }
+
+  }
+
+  function cancel(): void {
+      dispatch(setSnackbar(''))
+      router.push({
+        pathname: "/games/[gameid]",
+        params: { gameid: roundid, snackbar: 'Fail' },
+      });
   }
 
   function updateValidity(): void {
@@ -59,28 +77,35 @@ const [validInput, setValidInput] = useState(true)
       {players.map((player) => {
         return (
             
-            <View className="px-4" key={player.id}>
+            <View className="mt-8 px-8" key={player.id}>
           <View
             className="flex flex-row w-full items-center"
           >
             <Text className="text-2xl flex-grow">{player.name}</Text>
             <TextInput
               keyboardType="numeric"
-              className="w-24 border rounded-sm text-lg"
+              className="w-24 border border-slate-400/70 rounded-xl text-center text-lg"
               value={player.newScore}
                 onChangeText={(newScore) => updateScore(player.id, newScore)}
                 onFocus= {() => (player.newScore == '0' && updateScore(player.id, ''))}
                 onBlur={() => (player.newScore == '' && updateScore(player.id, '0'))}
               
             /></View>
-            <Text className={`text-md text-red-600 w-full text-right mt-1 mb-6 ${!player.validInput ? 'visible': 'invisible'}`}>Scores must be between -20 and 40</Text>
+            <Text className={`text-md text-red-600 w-full text-right mt-1 mb-0 ${!player.validInput ? 'visible': 'invisible'}`}>Scores must be between -20 and 40</Text>
           </View>
         );
       })}
-      <View className="flex flex-row w-full justify-end px-4">
+      <View className="mt-8 flex flex-row w-full justify-center gap-20 px-4">
+      <Text
+          className=" text-black tracking-wider font-bold text-center p-4"
+          onPress={() => {cancel()}}
+        >
+          Cancel
+        </Text>
+
         <Text
-          className={`w-40 p-4 font-semibold text-lg rounded-2xl ${!validInput ? 'bg-slate-300/80 text-slate-500/80': 'bg-green-300/80 text-black'}`}
-          onPress={() => {validInput && addRound('Success')}}
+          className={`w-28 text-center p-4 text-md font-semibold rounded-2xl ${!validInput ? 'bg-slate-300/80 text-slate-500/80': 'bg-[#8fbc8f] text-white'}`}
+          onPress={() => {updateValidity(); addRound('Success')}}
         >
           Add
         </Text>
