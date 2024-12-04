@@ -1,8 +1,10 @@
 import { Stack } from "expo-router"
+import { GameProvider } from '../app/GameContext';
 
 
 const _layout = () => {
   return (
+    <GameProvider>
     <Stack>
         <Stack.Screen name="index" options={{
             headerTitle: "Home Page"
@@ -16,8 +18,12 @@ const _layout = () => {
         <Stack.Screen name="games/insertRound/[roundid]" options={{
             headerTitle: "Record Round"
         }}/>
+        <Stack.Screen name="games/editRound/[roundid]" options={{
+            headerTitle: "Edit Round"
+        }}/>
 
     </Stack>
+    </GameProvider>
   )
 }
 

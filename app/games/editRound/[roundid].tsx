@@ -1,32 +1,49 @@
 import { useLocalSearchParams, router } from "expo-router";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import React, { useState } from 'react';
+import { useGameContext } from '../../GameContext'; // Import game context
 
 const EditRound = () => {
   const { roundid, player1, player2, player3, player4 } = useLocalSearchParams<{ roundid: string, player1: string, player2: string, player3: string, player4: string }>();
-  const [playerScores, setPlayerScores] = useState<{ player1: number, player2: number, player3: number, player4: number }>({
+  const { updateRound, deleteRound } = useGameContext(); // Destructure updateRound and deleteRound from game context
+
+  const [playerScores, setPlayerScores] = useState<Record<'player1' | 'player2' | 'player3' | 'player4', number>>({
     player1: parseInt(player1) || 0,
     player2: parseInt(player2) || 0,
     player3: parseInt(player3) || 0,
     player4: parseInt(player4) || 0,
   });
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  // Modal visibility states
+  const [isSaveModalVisible, setSaveModalVisible] = useState(false);
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
 
   const handleSave = () => {
-    // Update the round data in the parent component or global state here
-    // You could also call an API to save this data if needed
-    setShowSaveModal(false);
-    router.back();
+    setSaveModalVisible(true);
+  };
+
+  const confirmSave = () => {
+    updateRound(roundid, [
+      playerScores.player1,
+      playerScores.player2,
+      playerScores.player3,
+      playerScores.player4,
+    ]);
+    setSaveModalVisible(false);
+    router.push({ pathname: "../[gameid]", params: { gameid: roundid } });
   };
 
   const handleDelete = () => {
-    // Logic for deleting the round
-    setShowDeleteModal(false);
-    router.back();
+    setDeleteModalVisible(true);
   };
 
-  const handleInputChange = (player: keyof typeof playerScores, value: string) => {
+  const confirmDelete = () => {
+    deleteRound(roundid);
+    setDeleteModalVisible(false);
+    router.push({ pathname: "../[gameid]", params: { gameid: roundid } });
+  };
+
+  const handleInputChange = (player: 'player1' | 'player2' | 'player3' | 'player4', value: string) => {
     setPlayerScores({ ...playerScores, [player]: parseInt(value) || 0 });
   };
 
@@ -35,23 +52,23 @@ const EditRound = () => {
       <Text style={styles.title}>Edit / Delete</Text>
       <Text style={styles.subtitle}>Round #{roundid}</Text>
 
-      {Object.keys(playerScores).map((player, index) => (
-        <View key={index} style={styles.inputContainer}>
+      {Object.keys(playerScores).map((player) => (
+        <View key={player} style={styles.inputContainer}>
           <Text style={styles.label}>{player.replace('player', 'Player ')}</Text>
           <TextInput
             style={styles.input}
             keyboardType="numeric"
-            value={playerScores[player as keyof typeof playerScores].toString()}
-            onChangeText={(value) => handleInputChange(player as keyof typeof playerScores, value)}
+            value={playerScores[player as 'player1' | 'player2' | 'player3' | 'player4'].toString()}
+            onChangeText={(value) => handleInputChange(player as 'player1' | 'player2' | 'player3' | 'player4', value)}
           />
         </View>
       ))}
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => setShowDeleteModal(true)}>
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
           <Text style={styles.buttonText}>Delete round</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.saveButton} onPress={() => setShowSaveModal(true)}>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.buttonText}>Save round</Text>
         </TouchableOpacity>
       </View>
@@ -62,19 +79,20 @@ const EditRound = () => {
 
       {/* Save Confirmation Modal */}
       <Modal
-        transparent={true}
-        visible={showSaveModal}
         animationType="slide"
-        onRequestClose={() => setShowSaveModal(false)}
+        transparent={true}
+        visible={isSaveModalVisible}
+        onRequestClose={() => setSaveModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalText}>Are you sure you want to save your changes?</Text>
+            <Text style={styles.modalTitle}>Confirmation - Edit</Text>
+            <Text>Are you sure you want to save your changes?</Text>
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity onPress={() => setShowSaveModal(false)}>
-                <Text style={styles.cancelText}>Cancel ⨉</Text>
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setSaveModalVisible(false)}>
+                <Text style={styles.buttonText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.confirmButton} onPress={handleSave}>
+              <TouchableOpacity style={styles.confirmButton} onPress={confirmSave}>
                 <Text style={styles.buttonText}>Confirm</Text>
               </TouchableOpacity>
             </View>
@@ -84,19 +102,20 @@ const EditRound = () => {
 
       {/* Delete Confirmation Modal */}
       <Modal
-        transparent={true}
-        visible={showDeleteModal}
         animationType="slide"
-        onRequestClose={() => setShowDeleteModal(false)}
+        transparent={true}
+        visible={isDeleteModalVisible}
+        onRequestClose={() => setDeleteModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalText}>Are you sure you want to delete this round?</Text>
+            <Text style={styles.modalTitle}>Confirmation - Delete</Text>
+            <Text>Are you sure you want to delete this round?</Text>
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity onPress={() => setShowDeleteModal(false)}>
-                <Text style={styles.cancelText}>Cancel ⨉</Text>
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setDeleteModalVisible(false)}>
+                <Text style={styles.buttonText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteConfirmButton} onPress={handleDelete}>
+              <TouchableOpacity style={styles.deleteConfirmButton} onPress={confirmDelete}>
                 <Text style={styles.buttonText}>Delete</Text>
               </TouchableOpacity>
             </View>
@@ -166,38 +185,51 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
-  modalOverlay: {
+  modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
-    backgroundColor: '#fff',
+    width: 300,
     padding: 20,
+    backgroundColor: 'white',
     borderRadius: 10,
-    width: '80%',
     alignItems: 'center',
   },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20,
-    textAlign: 'center',
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   modalButtonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     width: '100%',
+    marginTop: 20,
+  },
+  cancelButton: {
+    backgroundColor: '#d3d3d3',
+    padding: 10,
+    borderRadius: 8,
+    flex: 1,
+    marginRight: 10,
+    alignItems: 'center',
   },
   confirmButton: {
     backgroundColor: '#8fbc8f',
     padding: 10,
     borderRadius: 8,
+    flex: 1,
+    alignItems: 'center',
   },
   deleteConfirmButton: {
     backgroundColor: '#f76c6c',
     padding: 10,
     borderRadius: 8,
+    flex: 1,
+    alignItems: 'center',
   },
 });
 
