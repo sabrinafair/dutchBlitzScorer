@@ -86,8 +86,7 @@ const EditRound = () => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Confirmation - Edit</Text>
-            <Text>Are you sure you want to save your changes?</Text>
+            <Text style={styles.modalConfirm}>Are you sure you want to save your changes?</Text>
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity style={styles.cancelButton} onPress={() => setSaveModalVisible(false)}>
                 <Text style={styles.buttonText}>Cancel</Text>
@@ -109,8 +108,7 @@ const EditRound = () => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Confirmation - Delete</Text>
-            <Text>Are you sure you want to delete this round?</Text>
+            <Text style={styles.modalConfirm}>Are you sure you want to delete this round?</Text>
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity style={styles.cancelButton} onPress={() => setDeleteModalVisible(false)}>
                 <Text style={styles.buttonText}>Cancel</Text>
@@ -198,10 +196,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  modalConfirm: {
+    textAlign: 'center',
   },
   modalButtonContainer: {
     flexDirection: 'row',

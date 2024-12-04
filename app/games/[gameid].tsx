@@ -62,7 +62,13 @@ const GamePage = () => {
         </View>
 
         <TouchableWithoutFeedback
-          onPress={() => addRound({ id: (rounds.length + 1).toString(), scores: [0, 0, 0, 0] })}
+        // onPress={() => addRound({ id: (rounds.length + 1).toString(), scores: [0, 0, 0, 0] })}
+        onPress={() =>
+            router.push({
+              pathname: 'games/insertRound/[roundid]',
+              params: { roundid: (rounds.length + 1).toString() },
+            })
+          }
         >
           <View style={styles.addButtonContainer}>
             <Text style={styles.addButtonText}>Add new round</Text>

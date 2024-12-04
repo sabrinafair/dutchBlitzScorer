@@ -15,7 +15,14 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
    const GameContext = createContext<GameContextType | undefined>(undefined);
 
    export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-     const [rounds, setRounds] = useState<Round[]>([/* initial rounds data */]);
+    //  const [rounds, setRounds] = useState<Round[]>([/* initial rounds data */]);
+    const [rounds, setRounds] = useState<Round[]>([
+      { id: "1", scores: [5, 10, 15, 20] },
+      { id: "2", scores: [10, 20, 30, 40] },
+      { id: "3", scores: [1, 1, -1, 1] },
+      { id: "4", scores: [1, 2, 3, 4] },
+      { id: "5", scores: [5, 2, 3, -5] },
+     ]);  
 
      const updateRound = (id: string, scores: number[]) => {
        setRounds(prevRounds => prevRounds.map(round => round.id === id ? { ...round, scores } : round));
