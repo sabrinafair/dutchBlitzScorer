@@ -1,21 +1,17 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { View, Text, TouchableWithoutFeedback, StyleSheet, ScrollView } from "react-native";
-import React, { useState } from 'react';
+import React from 'react';
+import { useGameContext } from '../GameContext'; // Import GameContext
 
 const GamePage = () => {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
-  const [rounds, setRounds] = useState([
-    { round: 1, player1: 5, player2: 10, player3: 15, player4: 20 },
-    { round: 2, player1: 10, player2: 20, player3: 25, player4: 30 },
-    { round: 3, player1: 15, player2: 25, player3: 10, player4: 40 },
-    { round: 4, player1: 20, player2: 35, player3: 40, player4: 50 },
-  ]);
+  const { rounds, addRound, updateRound, deleteRound } = useGameContext(); // Destructure from GameContext
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.scoreCard}>
         <Text style={styles.title}>Game Scores</Text>
-        <Text style={styles.subtitle}>Game 2</Text>
+        <Text style={styles.subtitle}>Game {gameid}</Text>
 
         <View style={styles.tableContainer}>
           <View style={[styles.tableRowHeader, styles.tableRowWithBorders]}>
@@ -29,21 +25,21 @@ const GamePage = () => {
 
           {rounds.map((round, index) => (
             <View style={[styles.tableRow, styles.tableRowWithBorders]} key={index}>
-              <Text style={styles.tableCell}>{round.round}</Text>
-              <Text style={styles.tableCell}>{round.player1}</Text>
-              <Text style={styles.tableCell}>{round.player2}</Text>
-              <Text style={styles.tableCell}>{round.player3}</Text>
-              <Text style={styles.tableCell}>{round.player4}</Text>
+              <Text style={styles.tableCell}>{round.id.toString()}</Text>
+              <Text style={styles.tableCell}>{round.scores[0]}</Text>
+              <Text style={styles.tableCell}>{round.scores[1]}</Text>
+              <Text style={styles.tableCell}>{round.scores[2]}</Text>
+              <Text style={styles.tableCell}>{round.scores[3]}</Text>
               <TouchableWithoutFeedback
                 onPress={() =>
                   router.push({
                     pathname: 'games/editRound/[roundid]',
                     params: {
-                      roundid: round.round,
-                      player1: round.player1,
-                      player2: round.player2,
-                      player3: round.player3,
-                      player4: round.player4,
+                      roundid: round.id.toString(),
+                      player1: round.scores[0],
+                      player2: round.scores[1],
+                      player3: round.scores[2],
+                      player4: round.scores[3],
                     },
                   })
                 }
@@ -57,19 +53,20 @@ const GamePage = () => {
 
           <View style={[styles.tableRowTotal, styles.tableRowWithBorders]}>
             <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}>Total</Text>
-            <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}>{rounds.reduce((sum, round) => sum + round.player1, 0)}</Text>
-            <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}>{rounds.reduce((sum, round) => sum + round.player2, 0)}</Text>
-            <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}>{rounds.reduce((sum, round) => sum + round.player3, 0)}</Text>
-            <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}>{rounds.reduce((sum, round) => sum + round.player4, 0)}</Text>
+            <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}>{rounds.reduce((sum, round) => sum + round.scores[0], 0)}</Text>
+            <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}>{rounds.reduce((sum, round) => sum + round.scores[1], 0)}</Text>
+            <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}>{rounds.reduce((sum, round) => sum + round.scores[2], 0)}</Text>
+            <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}>{rounds.reduce((sum, round) => sum + round.scores[3], 0)}</Text>
             <Text style={[styles.tableCellTotal, styles.tableCellBorderTop]}></Text>
           </View>
         </View>
 
         <TouchableWithoutFeedback
-          onPress={() =>
+        // onPress={() => addRound({ id: (rounds.length + 1).toString(), scores: [0, 0, 0, 0] })}
+        onPress={() =>
             router.push({
-              pathname: "games/insertRound/[roundid]",
-              params: { roundid: gameid },
+              pathname: 'games/insertRound/[roundid]',
+              params: { roundid: (rounds.length + 1).toString() },
             })
           }
         >
